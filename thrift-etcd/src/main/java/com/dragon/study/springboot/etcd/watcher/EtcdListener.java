@@ -46,7 +46,7 @@ public abstract class EtcdListener
             case create:
             case compareAndDelete:
             case compareAndSwap:
-              changeEvent(response);
+              changeEvent();
               break;
             default:
               break;
@@ -74,6 +74,6 @@ public abstract class EtcdListener
     }
   }
 
-  protected abstract void changeEvent(EtcdKeysResponse response);
+  protected abstract void changeEvent();
 
 }

@@ -10,7 +10,6 @@ import lombok.Data;
 @Data
 @ConfigurationProperties(prefix = "etcd.discovery")
 public class EtcdDiscoveryProperties {
-  String root = "/dragon";
   int heartbeat = 5000;
   int ttl = 10;
 

@@ -50,7 +50,7 @@ public class ThriftRegisterConfiguration {
       throw new ThriftServerException("interface name is not match to package pattern");
     }
 
-    register.setPath(etcdRegisterProperties.getRoot() + "/service/" + interfaceName);
+    register.setPath("/dragon/service/" + interfaceName);
 
     String ip = "127.0.0.1";
     try {
