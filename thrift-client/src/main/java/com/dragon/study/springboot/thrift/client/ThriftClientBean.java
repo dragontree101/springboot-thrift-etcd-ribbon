@@ -1,7 +1,7 @@
-package com.dragon.study.springboot.thrift.client.client;
+package com.dragon.study.springboot.thrift.client;
 
 
-import com.dragon.study.springboot.thrift.client.client.route.RouterAlgorithm;
+import com.dragon.study.springboot.thrift.client.route.RouterAlgorithm;
 
 import java.lang.reflect.Constructor;
 

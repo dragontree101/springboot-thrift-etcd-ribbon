@@ -1,7 +1,7 @@
-package com.dragon.study.springboot.thrift.client.client;
+package com.dragon.study.springboot.thrift.client;
 
 
-import com.dragon.study.springboot.thrift.client.client.route.Node;
+import com.dragon.study.springboot.thrift.client.route.Node;
 import com.netflix.client.config.IClientConfig;
 import com.netflix.loadbalancer.AbstractServerList;
 

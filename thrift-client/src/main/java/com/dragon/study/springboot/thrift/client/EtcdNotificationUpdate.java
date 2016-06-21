@@ -1,4 +1,4 @@
-package com.dragon.study.springboot.thrift.client.client;
+package com.dragon.study.springboot.thrift.client;
 
 
 import com.google.common.util.concurrent.ThreadFactoryBuilder;

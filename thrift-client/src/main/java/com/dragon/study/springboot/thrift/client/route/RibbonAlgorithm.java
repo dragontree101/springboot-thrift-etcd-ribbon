@@ -1,10 +1,10 @@
-package com.dragon.study.springboot.thrift.client.client.route;
+package com.dragon.study.springboot.thrift.client.route;
 
 
 import com.dragon.study.springboot.etcd.watcher.EtcdWatcher;
-import com.dragon.study.springboot.thrift.client.client.EtcdNotificationUpdate;
-import com.dragon.study.springboot.thrift.client.client.ThriftServer;
-import com.dragon.study.springboot.thrift.client.client.ThriftServerList;
+import com.dragon.study.springboot.thrift.client.EtcdNotificationUpdate;
+import com.dragon.study.springboot.thrift.client.ThriftServer;
+import com.dragon.study.springboot.thrift.client.ThriftServerList;
 import com.netflix.client.config.CommonClientConfigKey;
 import com.netflix.client.config.DefaultClientConfigImpl;
 import com.netflix.loadbalancer.AvailabilityFilteringRule;
@@ -41,7 +41,7 @@ public class RibbonAlgorithm implements RouterAlgorithm {
     config.setProperty(CommonClientConfigKey.ServerListUpdaterClassName,
         EtcdNotificationUpdate.class.getName());
 
-    String path = "/rhllor/service/" + className;
+    String path = "/dragon/service/" + className;
     loadBalancer = new DynamicServerListLoadBalancer<>(config, new AvailabilityFilteringRule(),
         new DummyPing(), new ThriftServerList(etcdClient, className),
         new ZoneAffinityServerListFilter<>(),

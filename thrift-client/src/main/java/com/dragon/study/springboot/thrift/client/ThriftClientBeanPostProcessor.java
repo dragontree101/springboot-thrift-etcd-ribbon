@@ -1,15 +1,15 @@
-package com.dragon.study.springboot.thrift.client.client;
+package com.dragon.study.springboot.thrift.client;
 
 
 import com.dragon.study.springboot.etcd.watcher.EtcdWatcher;
 import com.dragon.study.springboot.etcd.watcher.WatcherAutoConfiguration;
 import com.dragon.study.springboot.thrift.client.annotation.ThriftClient;
-import com.dragon.study.springboot.thrift.client.client.route.DirectAlgorithm;
-import com.dragon.study.springboot.thrift.client.client.route.Node;
-import com.dragon.study.springboot.thrift.client.client.route.RibbonAlgorithm;
-import com.dragon.study.springboot.thrift.client.client.route.RouterAlgorithm;
 import com.dragon.study.springboot.thrift.client.exception.NoAvailableTransportException;
 import com.dragon.study.springboot.thrift.client.exception.ThriftClientException;
+import com.dragon.study.springboot.thrift.client.route.DirectAlgorithm;
+import com.dragon.study.springboot.thrift.client.route.Node;
+import com.dragon.study.springboot.thrift.client.route.RibbonAlgorithm;
+import com.dragon.study.springboot.thrift.client.route.RouterAlgorithm;
 
 import org.aopalliance.intercept.MethodInterceptor;
 import org.apache.commons.lang3.exception.ExceptionUtils;

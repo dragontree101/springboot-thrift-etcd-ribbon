@@ -1,7 +1,7 @@
-package com.dragon.study.springboot.thrift.client.client.pool;
+package com.dragon.study.springboot.thrift.client.pool;
 
 
-import com.dragon.study.springboot.thrift.client.client.route.Node;
+import com.dragon.study.springboot.thrift.client.route.Node;
 import com.dragon.study.springboot.thrift.client.exception.ThriftClientException;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;

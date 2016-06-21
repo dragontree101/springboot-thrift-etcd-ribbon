@@ -1,4 +1,4 @@
-package com.dragon.study.springboot.thrift.client.client.route;
+package com.dragon.study.springboot.thrift.client.route;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

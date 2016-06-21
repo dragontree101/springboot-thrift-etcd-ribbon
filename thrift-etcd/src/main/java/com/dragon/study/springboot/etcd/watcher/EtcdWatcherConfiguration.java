@@ -1,7 +1,6 @@
 package com.dragon.study.springboot.etcd.watcher;
 
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +17,7 @@ import java.util.Iterator;
 @Configuration
 @ConditionalOnBean(EtcdListener.class)
 @EnableScheduling
-@AutoConfigureAfter(name = "com.ricebook.rhllor.spring.boot.thrift.client.ThriftClientConfiguration")
+@AutoConfigureAfter(name = "com.dragon.study.springboot.thrift.client.client.ThriftClientConfiguration")
 @Import(WatcherAutoConfiguration.class)
 public class EtcdWatcherConfiguration {
 

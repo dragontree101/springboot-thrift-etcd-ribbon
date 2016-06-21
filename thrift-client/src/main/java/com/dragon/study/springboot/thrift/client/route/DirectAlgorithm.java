@@ -1,4 +1,4 @@
-package com.dragon.study.springboot.thrift.client.client.route;
+package com.dragon.study.springboot.thrift.client.route;
 
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
