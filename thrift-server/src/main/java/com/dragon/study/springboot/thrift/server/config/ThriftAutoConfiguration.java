@@ -32,11 +32,12 @@ import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.TimeUnit;
 
+import lombok.extern.slf4j.Slf4j;
+
 @Configuration
 @EnableConfigurationProperties({ThriftServerProperties.class})
+@Slf4j
 public class ThriftAutoConfiguration implements ApplicationContextAware {
-
-  private static final Logger logger = LoggerFactory.getLogger(ThriftAutoConfiguration.class);
 
   @Autowired
   private ThriftServerProperties thriftServerProperties;
@@ -57,7 +58,7 @@ public class ThriftAutoConfiguration implements ApplicationContextAware {
     try {
       int port = thriftServerProperties.getPort();
       if (port <= 0 || port >= 65535) {
-        logger.error("thrift server port error");
+        log.error("thrift server port error");
         return null;
       }
       nonblockingServerTransport = new TNonblockingServerSocket(port);
@@ -129,7 +130,7 @@ public class ThriftAutoConfiguration implements ApplicationContextAware {
 
     TNonblockingServerTransport transport = thriftServerTransport();
     if (transport == null) {
-      logger.error("no blocking server transport is null");
+      log.error("no blocking server transport is null");
       return null;
     }
 
@@ -142,11 +143,11 @@ public class ThriftAutoConfiguration implements ApplicationContextAware {
     try {
       processor = thriftProcessor();
     } catch (Exception e) {
-      e.printStackTrace();
+      log.error(e.getMessage(), e);
     }
 
     if (processor == null) {
-      logger.error("processor is null");
+      log.error("processor is null");
       return null;
     }
     args.processor(processor);
@@ -186,7 +187,7 @@ public class ThriftAutoConfiguration implements ApplicationContextAware {
       throw new ThriftServerException("args is null");
     }
 
-    logger.info("thrift server is starting, service name is {}, port is {}",
+    log.info("thrift server is starting, service name is {}, port is {}",
         thriftServerProperties.getServiceName(), thriftServerProperties.getPort());
     return new THsHaServer(args);
   }

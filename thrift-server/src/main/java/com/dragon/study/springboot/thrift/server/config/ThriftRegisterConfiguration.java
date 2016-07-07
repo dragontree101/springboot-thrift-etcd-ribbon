@@ -19,6 +19,7 @@ import org.springframework.context.annotation.Import;
 
 import java.util.regex.Pattern;
 
+import lombok.extern.slf4j.Slf4j;
 import mousio.etcd4j.EtcdClient;
 
 /**
@@ -28,12 +29,11 @@ import mousio.etcd4j.EtcdClient;
 @Import(EtcdAutoConfiguration.class)
 @AutoConfigureAfter({ThriftAutoConfiguration.class})
 @EnableConfigurationProperties({ThriftServerProperties.class, EtcdDiscoveryProperties.class})
+@Slf4j
 public class ThriftRegisterConfiguration {
 
   private final Pattern DEFAULT_PACKAGE_PATTERN = Pattern.compile(
       "(\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*\\.)*\\p{javaJavaIdentifierStart}\\p{javaJavaIdentifierPart}*");
-
-  private static final Logger logger = LoggerFactory.getLogger(ThriftRegisterConfiguration.class);
 
   @Bean
   @ConditionalOnMissingBean
@@ -56,7 +56,7 @@ public class ThriftRegisterConfiguration {
     try {
       ip = InetAddressUtil.getLocalHostLANAddress().getHostAddress();
     } catch (Exception e) {
-      e.printStackTrace();
+      log.warn(e.getMessage(), e);
     }
 
     String address = ip + ":" + String.valueOf(thriftServerProperties.getPort());
@@ -67,7 +67,7 @@ public class ThriftRegisterConfiguration {
     register.setStart(true);
 
     String path = register.getPath() + "/" + register.getKey();
-    logger.info("path is {} register success!", path);
+    log.info("path is {} register success!", path);
     return register;
   }
 

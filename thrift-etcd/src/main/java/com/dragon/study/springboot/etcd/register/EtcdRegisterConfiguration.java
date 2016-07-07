@@ -14,6 +14,7 @@ import org.springframework.scheduling.annotation.Scheduled;
 
 import java.util.regex.Pattern;
 
+import lombok.extern.slf4j.Slf4j;
 import mousio.etcd4j.EtcdClient;
 
 /**
@@ -25,10 +26,17 @@ import mousio.etcd4j.EtcdClient;
 @AutoConfigureAfter(name = "com.dragon.study.springboot.thrift.server.ThriftServerBootstrap")
 @EnableConfigurationProperties(EtcdDiscoveryProperties.class)
 @Import(EtcdAutoConfiguration.class)
+@Slf4j
 public class EtcdRegisterConfiguration {
 
   @Autowired
   private EtcdRegister etcdRegister;
+
+  @Autowired
+  private EtcdClient etcdClient;
+
+  @Autowired
+  private EtcdDiscoveryProperties etcdRegisterProperties;
 
   private static final Pattern DEFAULT_ADDRESS_PATTERN = Pattern
       .compile("\\d{1,3}(?:\\.\\d{1,3}){3}(?::\\d{1,5})?");
@@ -36,11 +44,11 @@ public class EtcdRegisterConfiguration {
   private boolean isRefresh = false;
 
   @Scheduled(initialDelayString = "${etcd.discovery.heartbeat:5000}", fixedRateString = "${spring.cloud.etcd.discovery.heartbeat:5000}")
-  protected void sendHeartbeat(EtcdClient etcdClient, EtcdDiscoveryProperties etcdRegisterProperties) {
-    register(etcdClient, etcdRegisterProperties);
+  protected void sendHeartbeat() {
+    register();
   }
 
-  private void register(EtcdClient etcdClient, EtcdDiscoveryProperties etcdRegisterProperties) {
+  private void register() {
     if (!etcdRegister.isStart()) {
       return;
     }
@@ -60,11 +68,11 @@ public class EtcdRegisterConfiguration {
           etcdClient.put(path, value).ttl(sessionTime).send().get();
         }
       } catch (Exception e) {
-        e.printStackTrace();
+        log.error(e.getMessage(), e);
         try {
           etcdClient.put(path, value).ttl(sessionTime).send().get();
         } catch (Exception ex) {
-          ex.printStackTrace();
+          log.error(ex.getMessage(), ex);
         }
       }
       isRefresh = true;

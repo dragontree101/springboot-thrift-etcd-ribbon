@@ -11,6 +11,8 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.SmartLifecycle;
 import org.springframework.context.annotation.Configuration;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * Created by dragon on 16/4/12.
  */
@@ -18,9 +20,8 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 @ConditionalOnBean(TServer.class)
 @AutoConfigureAfter({ThriftRegisterConfiguration.class})
+@Slf4j
 public class ThriftServerBootstrap implements SmartLifecycle {
-
-  private static final Logger logger = LoggerFactory.getLogger(ThriftServerBootstrap.class);
 
   @Autowired
   private TServer server;
@@ -35,7 +36,7 @@ public class ThriftServerBootstrap implements SmartLifecycle {
   @Override
   public void stop(Runnable runnable) {
     if (isRunning()) {
-      logger.info("thrift server shutdown");
+      log.info("thrift server shutdown");
       server.setShouldStop(true);
       server.stop();
       if (runnable != null) {
@@ -84,11 +85,9 @@ public class ThriftServerBootstrap implements SmartLifecycle {
     @Override
     public void run() {
       if (server != null) {
-        logger.info("thrift server started");
+        log.info("thrift server started");
         this.server.serve();
       }
     }
   }
-
-
 }
