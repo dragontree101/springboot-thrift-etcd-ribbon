@@ -37,7 +37,7 @@ public class CalculatorImpl implements Calculator.Iface {
 
   public int add(int n1, int n2) {
     try {
-      Thread.sleep(1000);
+      Thread.sleep(100);
     } catch (InterruptedException e) {
       e.printStackTrace();
     }

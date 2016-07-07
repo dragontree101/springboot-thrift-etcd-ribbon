@@ -22,7 +22,7 @@ public class InetAddressUtil {
           if (!inetAddr.isLoopbackAddress()) {
 
             if (inetAddr.isSiteLocalAddress()) {
-              return inetAddr;
+                return inetAddr;
             } else if (candidateAddress == null) {
               candidateAddress = inetAddr;
             }

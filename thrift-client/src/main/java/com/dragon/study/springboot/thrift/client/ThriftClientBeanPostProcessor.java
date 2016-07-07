@@ -55,7 +55,7 @@ import mousio.etcd4j.EtcdClient;
 @Component
 @Configuration
 @ConditionalOnClass(ThriftClient.class)
-@AutoConfigureAfter({ThriftClientConfiguration.class, WatcherAutoConfiguration.class})
+@AutoConfigureAfter({WatcherAutoConfiguration.class, ThriftClientConfiguration.class})
 @Slf4j
 public class ThriftClientBeanPostProcessor implements BeanPostProcessor {
 

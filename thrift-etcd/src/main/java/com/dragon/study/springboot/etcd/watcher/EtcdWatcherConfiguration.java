@@ -1,6 +1,7 @@
 package com.dragon.study.springboot.etcd.watcher;
 
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.context.annotation.Configuration;
@@ -21,14 +22,17 @@ import java.util.Iterator;
 @Import(WatcherAutoConfiguration.class)
 public class EtcdWatcherConfiguration {
 
+  @Autowired
+  EtcdWatcher etcdWatcher;
+
 
   @Scheduled(initialDelayString = "${etcd.discovery.heartbeat:5000}", fixedRateString = "${spring.cloud.etcd.discovery.heartbeat:5000}")
-  protected void sendHeartbeat(EtcdWatcher etcdWatcher) {
-    watcher(etcdWatcher);
+  protected void sendHeartbeat() {
+    watcher();
   }
 
 
-  public void watcher(EtcdWatcher etcdWatcher) {
+  public void watcher() {
     Iterator<EtcdListener> iterator = etcdWatcher.getListeners().iterator();
 
     while (iterator.hasNext()) {

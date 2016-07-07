@@ -14,6 +14,7 @@ import java.net.URI;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.extern.slf4j.Slf4j;
 import mousio.client.retry.RetryNTimes;
 import mousio.etcd4j.EtcdClient;
 
@@ -22,16 +23,16 @@ import mousio.etcd4j.EtcdClient;
  */
 @Configuration
 @EnableConfigurationProperties(EtcdClientProperties.class)
+@Slf4j
 public class EtcdAutoConfiguration {
 
-  private static final Logger logger = LoggerFactory.getLogger(EtcdAutoConfiguration.class);
 
   @Bean
   @ConditionalOnMissingBean
   public EtcdClient etcdClient(EtcdClientProperties etcdClientProperties) {
     List<URI> uriList = etcdClientProperties.getUris();
     if (uriList == null || uriList.isEmpty()) {
-      logger.error("uri has not been set");
+      log.error("uri has not been set");
       return null;
     }
 
@@ -40,11 +41,11 @@ public class EtcdAutoConfiguration {
         etcdClientProperties.getRetryTimes()));
 
     if (client.version() == null) {
-      logger.info("etcd urls are [ {} ] is invalid",
+      log.info("etcd urls are [ {} ] is invalid",
           etcdClientProperties.getUris().stream().map(uri -> uri.toString())
               .collect(Collectors.joining(", ")));
     } else {
-      logger.info("etcd version is {} , urls are [ {} ]", client.version().getCluster(),
+      log.info("etcd version is {} , urls are [ {} ]", client.version().getCluster(),
           etcdClientProperties.getUris().stream().map(uri -> uri.toString())
               .collect(Collectors.joining(", ")));
     }
