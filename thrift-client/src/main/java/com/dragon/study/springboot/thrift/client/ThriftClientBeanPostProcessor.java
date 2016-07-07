@@ -46,6 +46,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import javax.annotation.PreDestroy;
 
+import lombok.extern.slf4j.Slf4j;
 import mousio.etcd4j.EtcdClient;
 
 /**
@@ -55,6 +56,7 @@ import mousio.etcd4j.EtcdClient;
 @Configuration
 @ConditionalOnClass(ThriftClient.class)
 @AutoConfigureAfter({ThriftClientConfiguration.class, WatcherAutoConfiguration.class})
+@Slf4j
 public class ThriftClientBeanPostProcessor implements BeanPostProcessor {
 
   private Map<String, Class> beansToProcess = new HashMap<>();
@@ -72,9 +74,6 @@ public class ThriftClientBeanPostProcessor implements BeanPostProcessor {
 
   @Autowired
   private EtcdWatcher etcdWatcher;
-
-  public ThriftClientBeanPostProcessor() {
-  }
 
   @Override
   public Object postProcessBeforeInitialization(Object bean, String beanName)
@@ -145,6 +144,7 @@ public class ThriftClientBeanPostProcessor implements BeanPostProcessor {
       Constructor<?> clientConstructor = field.getType().getConstructor(TProtocol.class);
       thriftClientBean.setClientConstructor(clientConstructor);
     } catch (SecurityException | NoSuchMethodException e) {
+      log.error(e.getMessage(), e);
       throw new ThriftClientException(
           ExceptionUtils.getMessage(e) + ", client class name is " + className);
     }
@@ -159,7 +159,7 @@ public class ThriftClientBeanPostProcessor implements BeanPostProcessor {
         target = ((Advised) target).getTargetSource().getTarget();
       }
     } catch (Exception e) {
-      e.printStackTrace();
+      log.error(e.getMessage(), e);
       throw new ThriftClientException("get target bean error", e);
     }
     return target;
@@ -171,6 +171,7 @@ public class ThriftClientBeanPostProcessor implements BeanPostProcessor {
       proxyFactory = new ProxyFactory(BeanUtils
           .instantiateClass(field.getType().getConstructor(TProtocol.class), (TProtocol) null));
     } catch (NoSuchMethodException e) {
+      log.error(e.getMessage(), e);
       throw new InvalidPropertyException(bean.getClass(), field.getName(), e.getMessage());
     }
     return proxyFactory;
