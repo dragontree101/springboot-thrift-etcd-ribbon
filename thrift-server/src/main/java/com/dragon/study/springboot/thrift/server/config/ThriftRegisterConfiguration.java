@@ -2,13 +2,10 @@ package com.dragon.study.springboot.thrift.server.config;
 
 
 import com.dragon.study.springboot.etcd.EtcdAutoConfiguration;
-import com.dragon.study.springboot.etcd.config.EtcdDiscoveryProperties;
 import com.dragon.study.springboot.etcd.register.EtcdRegister;
 import com.dragon.study.springboot.thrift.server.exception.ThriftServerException;
 import com.dragon.study.springboot.thrift.server.utils.InetAddressUtil;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -28,7 +25,7 @@ import mousio.etcd4j.EtcdClient;
 @Configuration
 @Import(EtcdAutoConfiguration.class)
 @AutoConfigureAfter({ThriftAutoConfiguration.class})
-@EnableConfigurationProperties({ThriftServerProperties.class, EtcdDiscoveryProperties.class})
+@EnableConfigurationProperties({ThriftServerProperties.class})
 @Slf4j
 public class ThriftRegisterConfiguration {
 
@@ -39,8 +36,7 @@ public class ThriftRegisterConfiguration {
   @ConditionalOnMissingBean
   @ConditionalOnProperty(value = "thrift.server.port", matchIfMissing = false)
   public EtcdRegister etcdRegister(EtcdClient etcdClient,
-      ThriftServerProperties thriftServerProperties,
-      EtcdDiscoveryProperties etcdRegisterProperties) {
+      ThriftServerProperties thriftServerProperties) {
     EtcdRegister register = new EtcdRegister();
     String serviceName = thriftServerProperties.getServiceName();
 
