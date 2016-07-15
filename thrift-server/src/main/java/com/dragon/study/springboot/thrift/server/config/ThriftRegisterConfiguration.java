@@ -48,12 +48,7 @@ public class ThriftRegisterConfiguration {
 
     register.setPath("/dragon/service/" + interfaceName);
 
-    String ip = "127.0.0.1";
-    try {
-      ip = InetAddressUtil.getLocalHostLANAddress().getHostAddress();
-    } catch (Exception e) {
-      log.warn(e.getMessage(), e);
-    }
+    String ip = InetAddressUtil.getLocalHostLANAddress().getHostAddress();
 
     String address = ip + ":" + String.valueOf(thriftServerProperties.getPort());
     register.setKey(address);

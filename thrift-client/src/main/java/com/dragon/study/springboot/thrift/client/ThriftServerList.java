@@ -82,8 +82,7 @@ public class ThriftServerList extends AbstractServerList<ThriftServer> {
 
   private String extractLastPath(String key) {
     int lastSlash = key.lastIndexOf("/");
-    String lastPah = key.substring(lastSlash + 1, key.length());
-    return lastPah;
+    return key.substring(lastSlash + 1, key.length());
   }
 
   private String extractAppName(String key) {

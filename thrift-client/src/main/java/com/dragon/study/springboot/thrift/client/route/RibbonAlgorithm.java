@@ -1,7 +1,6 @@
 package com.dragon.study.springboot.thrift.client.route;
 
 
-import com.dragon.study.springboot.etcd.watcher.EtcdWatcher;
 import com.dragon.study.springboot.thrift.client.EtcdNotificationUpdate;
 import com.dragon.study.springboot.thrift.client.ThriftServer;
 import com.dragon.study.springboot.thrift.client.ThriftServerList;
@@ -20,18 +19,15 @@ import mousio.etcd4j.EtcdClient;
  */
 public class RibbonAlgorithm implements RouterAlgorithm {
 
-  private final EtcdWatcher etcdWatcher;
-
   private final String className;
 
   private final EtcdClient etcdClient;
 
   private DynamicServerListLoadBalancer<ThriftServer> loadBalancer;
 
-  public RibbonAlgorithm(String className, EtcdClient etcdClient, EtcdWatcher etcdWatcher) {
+  public RibbonAlgorithm(String className, EtcdClient etcdClient) {
     this.className = className;
     this.etcdClient = etcdClient;
-    this.etcdWatcher = etcdWatcher;
     init();
   }
 
@@ -45,7 +41,7 @@ public class RibbonAlgorithm implements RouterAlgorithm {
     loadBalancer = new DynamicServerListLoadBalancer<>(config, new AvailabilityFilteringRule(),
         new DummyPing(), new ThriftServerList(etcdClient, className),
         new ZoneAffinityServerListFilter<>(),
-        new EtcdNotificationUpdate(etcdClient, etcdWatcher, path));
+        new EtcdNotificationUpdate(etcdClient, path));
   }
 
   @Override

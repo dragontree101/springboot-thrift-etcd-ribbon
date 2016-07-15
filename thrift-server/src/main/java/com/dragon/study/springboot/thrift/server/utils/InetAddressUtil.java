@@ -10,7 +10,7 @@ import java.util.Enumeration;
  */
 public class InetAddressUtil {
 
-  public static InetAddress getLocalHostLANAddress() throws UnknownHostException {
+  public static InetAddress getLocalHostLANAddress() {
     try {
       InetAddress candidateAddress = null;
       for (Enumeration<NetworkInterface> ifaces = NetworkInterface.getNetworkInterfaces();
@@ -21,8 +21,8 @@ public class InetAddressUtil {
           InetAddress inetAddr = inetAddrs.nextElement();
           if (!inetAddr.isLoopbackAddress()) {
 
-            if (inetAddr.isSiteLocalAddress()) {
-                return inetAddr;
+            if (inetAddr.isSiteLocalAddress() && inetAddr.isReachable(500)) {
+              return inetAddr;
             } else if (candidateAddress == null) {
               candidateAddress = inetAddr;
             }
@@ -42,7 +42,7 @@ public class InetAddressUtil {
       UnknownHostException unknownHostException = new UnknownHostException(
           "Failed to determine LAN address: " + e);
       unknownHostException.initCause(e);
-      throw unknownHostException;
+      throw new RuntimeException(unknownHostException);
     }
   }
 }

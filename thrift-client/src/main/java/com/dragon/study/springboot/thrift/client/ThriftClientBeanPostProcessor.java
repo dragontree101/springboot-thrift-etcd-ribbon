@@ -1,8 +1,6 @@
 package com.dragon.study.springboot.thrift.client;
 
 
-import com.dragon.study.springboot.etcd.watcher.EtcdWatcher;
-import com.dragon.study.springboot.etcd.watcher.WatcherAutoConfiguration;
 import com.dragon.study.springboot.thrift.client.annotation.ThriftClient;
 import com.dragon.study.springboot.thrift.client.exception.NoAvailableTransportException;
 import com.dragon.study.springboot.thrift.client.exception.ThriftClientException;
@@ -55,7 +53,7 @@ import mousio.etcd4j.EtcdClient;
 @Component
 @Configuration
 @ConditionalOnClass(ThriftClient.class)
-@AutoConfigureAfter({WatcherAutoConfiguration.class, ThriftClientConfiguration.class})
+@AutoConfigureAfter({ThriftClientConfiguration.class})
 @Slf4j
 public class ThriftClientBeanPostProcessor implements BeanPostProcessor {
 
@@ -72,8 +70,6 @@ public class ThriftClientBeanPostProcessor implements BeanPostProcessor {
   @Autowired
   private EtcdClient etcdClient;
 
-  @Autowired
-  private EtcdWatcher etcdWatcher;
 
   @Override
   public Object postProcessBeforeInitialization(Object bean, String beanName)
@@ -131,7 +127,7 @@ public class ThriftClientBeanPostProcessor implements BeanPostProcessor {
 
     RouterAlgorithm router;
     if (annotation.address().isEmpty()) {
-      router = new RibbonAlgorithm(className, etcdClient, etcdWatcher);
+      router = new RibbonAlgorithm(className, etcdClient);
     } else {
       router = new DirectAlgorithm(annotation.address());
     }

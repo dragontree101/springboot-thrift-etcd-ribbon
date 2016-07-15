@@ -4,7 +4,6 @@ package com.dragon.study.springboot.thrift.client;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
 
 import com.dragon.study.springboot.etcd.watcher.EtcdListener;
-import com.dragon.study.springboot.etcd.watcher.EtcdWatcher;
 import com.netflix.loadbalancer.ServerListUpdater;
 
 import java.io.IOException;
@@ -16,6 +15,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
 
 import mousio.etcd4j.EtcdClient;
+import mousio.etcd4j.promises.EtcdResponsePromise;
 
 /**
  * Created by dragon on 16/6/7.
@@ -44,13 +44,12 @@ public class EtcdNotificationUpdate implements ServerListUpdater {
     }
   }
 
-  public EtcdNotificationUpdate(EtcdClient etcdClient, EtcdWatcher etcdWatcher, String listenPath) {
-    this(etcdClient, etcdWatcher, listenPath, getDefaultRefreshExecutor());
+  public EtcdNotificationUpdate(EtcdClient etcdClient, String listenPath) {
+    this(etcdClient, listenPath, getDefaultRefreshExecutor());
   }
 
-  public EtcdNotificationUpdate(EtcdClient etcdClient, EtcdWatcher etcdWatcher, String listenPath, ExecutorService refreshExecutor) {
+  public EtcdNotificationUpdate(EtcdClient etcdClient, String listenPath, ExecutorService refreshExecutor) {
     this.etcdClient = etcdClient;
-    this.etcdWatcher = etcdWatcher;
     this.listenPath = listenPath;
     this.refreshExecutor = refreshExecutor;
   }
@@ -64,13 +63,13 @@ public class EtcdNotificationUpdate implements ServerListUpdater {
   private final ExecutorService refreshExecutor;
   private final EtcdClient etcdClient;
   private final String listenPath;
-  private final EtcdWatcher etcdWatcher;
 
   @Override
   public void start(UpdateAction updateAction) {
     if (isActive.compareAndSet(false, true)) {
       try {
-        etcdWatcher.addWatchPath(new EtcdListener(etcdClient, listenPath) {
+        EtcdResponsePromise responsePromise = etcdClient.get(listenPath).recursive().waitForChange().send();
+        responsePromise.addListener(new EtcdListener(etcdClient, listenPath) {
 
           @Override
           protected void changeEvent() {

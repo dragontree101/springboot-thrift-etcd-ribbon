@@ -1,4 +1,3 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.dragon.study.springboot.etcd.register.EtcdRegisterConfiguration,\
-com.dragon.study.springboot.etcd.watcher.EtcdWatcherConfiguration,\
-com.dragon.study.springboot.etcd.watcher.WatcherAutoConfiguration
+com.dragon.study.springboot.etcd.EtcdAutoConfiguration,\
+com.dragon.study.springboot.etcd.register.EtcdRegisterConfiguration

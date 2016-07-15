@@ -1,7 +1,6 @@
 package com.dragon.study.springboot.thrift.client;
 
 
-import com.dragon.study.springboot.etcd.watcher.EtcdListener;
 import com.dragon.study.springboot.thrift.client.config.ThriftClientProperties;
 import com.dragon.study.springboot.thrift.client.pool.TransportPoolFactory;
 import com.dragon.study.springboot.thrift.client.route.Node;
@@ -21,15 +20,6 @@ import org.springframework.context.annotation.Configuration;
 @EnableConfigurationProperties(ThriftClientProperties.class)
 public class ThriftClientConfiguration {
 
-  @Bean
-  public EtcdListener EtcdClientListener() {
-    return new EtcdListener() {
-      @Override
-      protected void changeEvent() {
-
-      }
-    };
-  }
 
   @Bean(destroyMethod = "close")
   @ConditionalOnMissingBean
