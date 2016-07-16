@@ -35,6 +35,8 @@ import org.springframework.util.ReflectionUtils;
 
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.net.SocketException;
 import java.net.SocketTimeoutException;
@@ -81,6 +83,11 @@ public class ThriftClientBeanPostProcessor implements BeanPostProcessor {
           beansToProcess.put(beanName, clazz);
         }
       }
+      for (Method method : clazz.getDeclaredMethods()) {
+        if (method.isAnnotationPresent(ThriftClient.class) && method.getParameterCount() == 1) {
+          beansToProcess.put(beanName, clazz);
+        }
+      }
       clazz = clazz.getSuperclass();
     } while (clazz != null);
     return bean;
@@ -90,7 +97,8 @@ public class ThriftClientBeanPostProcessor implements BeanPostProcessor {
   public Object postProcessAfterInitialization(Object bean, String beanName) throws BeansException {
     if (beansToProcess.containsKey(beanName)) {
       Object target = getTargetBean(bean);
-      for (Field field : beansToProcess.get(beanName).getDeclaredFields()) {
+      Class clazz = beansToProcess.get(beanName);
+      for (Field field : clazz.getDeclaredFields()) {
         ThriftClient annotation = AnnotationUtils.getAnnotation(field, ThriftClient.class);
 
         if (annotation != null) {
@@ -98,14 +106,12 @@ public class ThriftClientBeanPostProcessor implements BeanPostProcessor {
             ReflectionUtils.makeAccessible(field);
             ReflectionUtils.setField(field, target, beanFactory.getBean(field.getName()));
           } else {
-            String className = field.getType().getCanonicalName();
-            int lastComma = className.lastIndexOf(".");
-            String realClassName = className.substring(0, lastComma);
+            String realClassName = getRealClassName(field.getType());
 
-            ThriftClientBean thriftClientBean = createThriftClientBean(field, realClassName,
+            ThriftClientBean thriftClientBean = createThriftClientBean(field.getType(), realClassName,
                 annotation);
             thriftClientMap.put(beanName + "-" + realClassName, thriftClientBean);
-            ProxyFactory proxyFactory = getProxyFactoryForThriftClient(target, field);
+            ProxyFactory proxyFactory = getProxyFactoryForThriftClient(target, field.getType(), field.getName());
 
             addPoolAdvice(proxyFactory, beanName + "-" + realClassName);
 
@@ -117,11 +123,40 @@ public class ThriftClientBeanPostProcessor implements BeanPostProcessor {
           }
         }
       }
+
+      for (Method method : clazz.getDeclaredMethods()) {
+        ThriftClient annotation = AnnotationUtils.getAnnotation(method, ThriftClient.class);
+
+        if (annotation != null && method.getParameterCount() == 1) {
+          Parameter parameter = method.getParameters()[0];
+
+          String realClassName = getRealClassName(parameter.getType());
+
+          ThriftClientBean thriftClientBean = createThriftClientBean(parameter.getType(), realClassName,
+              annotation);
+          thriftClientMap.put(beanName + "-" + realClassName, thriftClientBean);
+          ProxyFactory proxyFactory = getProxyFactoryForThriftClient(target, parameter.getType(), method.getName());
+
+          addPoolAdvice(proxyFactory, beanName + "-" + realClassName);
+
+          proxyFactory.setFrozen(true);
+          proxyFactory.setProxyTargetClass(true);
+
+          ReflectionUtils.makeAccessible(method);
+          ReflectionUtils.invokeMethod(method, target, proxyFactory.getProxy());
+        }
+      }
     }
     return bean;
   }
 
-  private ThriftClientBean createThriftClientBean(Field field, String className,
+  private String getRealClassName(Class<?> clazz) {
+    String className = clazz.getCanonicalName();
+    int lastComma = className.lastIndexOf(".");
+    return className.substring(0, lastComma);
+  }
+
+  private ThriftClientBean createThriftClientBean(Class<?> type, String className,
       ThriftClient annotation) {
     ThriftClientBean thriftClientBean = new ThriftClientBean();
 
@@ -137,7 +172,7 @@ public class ThriftClientBeanPostProcessor implements BeanPostProcessor {
     thriftClientBean.setRetryTimes(annotation.retryTimes());
 
     try {
-      Constructor<?> clientConstructor = field.getType().getConstructor(TProtocol.class);
+      Constructor<?> clientConstructor = type.getConstructor(TProtocol.class);
       thriftClientBean.setClientConstructor(clientConstructor);
     } catch (SecurityException | NoSuchMethodException e) {
       log.error(e.getMessage(), e);
@@ -161,14 +196,14 @@ public class ThriftClientBeanPostProcessor implements BeanPostProcessor {
     return target;
   }
 
-  private ProxyFactory getProxyFactoryForThriftClient(Object bean, Field field) {
+  private ProxyFactory getProxyFactoryForThriftClient(Object bean, Class<?> type, String name) {
     ProxyFactory proxyFactory;
     try {
       proxyFactory = new ProxyFactory(BeanUtils
-          .instantiateClass(field.getType().getConstructor(TProtocol.class), (TProtocol) null));
+          .instantiateClass(type.getConstructor(TProtocol.class), (TProtocol) null));
     } catch (NoSuchMethodException e) {
       log.error(e.getMessage(), e);
-      throw new InvalidPropertyException(bean.getClass(), field.getName(), e.getMessage());
+      throw new InvalidPropertyException(bean.getClass(), name, e.getMessage());
     }
     return proxyFactory;
   }
