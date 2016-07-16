@@ -10,12 +10,14 @@ import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import lombok.extern.slf4j.Slf4j;
 import mousio.etcd4j.EtcdClient;
 import mousio.etcd4j.responses.EtcdKeysResponse;
 
 /**
  * Created by dragon on 16/6/8.
  */
+@Slf4j
 public class ThriftServerList extends AbstractServerList<ThriftServer> {
 
   private final EtcdClient etcd;
@@ -43,6 +45,7 @@ public class ThriftServerList extends AbstractServerList<ThriftServer> {
 
   private List<ThriftServer> getServers() {
     if (etcd == null) {
+      log.warn("etcd is null, url is [ ]");
       return Collections.emptyList();
     }
 
@@ -50,6 +53,7 @@ public class ThriftServerList extends AbstractServerList<ThriftServer> {
       EtcdKeysResponse response = etcd.getDir("/dragon/service/" + serviceId).send().get();
 
       if (response.node.nodes == null || response.node.nodes.isEmpty()) {
+        log.warn("response node is empty, url is [ ]");
         return Collections.emptyList();
       }
 
@@ -62,11 +66,11 @@ public class ThriftServerList extends AbstractServerList<ThriftServer> {
         ThriftServer server = new ThriftServer(appName, thriftNodeAddress.getIp(), thriftNodeAddress.getPort());
         servers.add(server);
       }
-      System.out.println("service id " + serviceId + " url is [" + servers.stream().map(s -> s.getHostPort()).collect(
+      log.info("service id " + serviceId + " url is [" + servers.stream().map(s -> s.getHostPort()).collect(
           Collectors.joining(", "))+ "]");
       return servers;
     } catch (Exception e) {
-      e.printStackTrace();
+      log.error(e.getMessage(), e);
       return Collections.emptyList();
     }
   }

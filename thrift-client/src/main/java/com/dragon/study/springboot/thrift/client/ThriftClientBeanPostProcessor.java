@@ -104,10 +104,10 @@ public class ThriftClientBeanPostProcessor implements BeanPostProcessor {
 
             ThriftClientBean thriftClientBean = createThriftClientBean(field, realClassName,
                 annotation);
-            thriftClientMap.put(beanName, thriftClientBean);
+            thriftClientMap.put(beanName + "-" + realClassName, thriftClientBean);
             ProxyFactory proxyFactory = getProxyFactoryForThriftClient(target, field);
 
-            addPoolAdvice(proxyFactory, beanName);
+            addPoolAdvice(proxyFactory, beanName + "-" + realClassName);
 
             proxyFactory.setFrozen(true);
             proxyFactory.setProxyTargetClass(true);

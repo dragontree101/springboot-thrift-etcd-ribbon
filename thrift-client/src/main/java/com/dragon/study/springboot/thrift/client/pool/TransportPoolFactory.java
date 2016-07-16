@@ -19,7 +19,7 @@ public class TransportPoolFactory extends BaseKeyedPooledObjectFactory<Node, TTr
 
   private static ConcurrentHashMap<String, Long> forbidMap = new ConcurrentHashMap<>();
 
-  private static final int FORBID_TIME = 6000;
+  private static final int FORBID_TIME = 5000;
 
   @Override
   public void destroyObject(Node key, PooledObject<TTransport> value) throws Exception {
