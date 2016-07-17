@@ -1,6 +1,7 @@
 package com.dragon.study.springboot.thrift.client;
 
 
+import com.dragon.study.springboot.etcd.EtcdAutoConfiguration;
 import com.dragon.study.springboot.thrift.client.annotation.ThriftClient;
 import com.dragon.study.springboot.thrift.client.exception.NoAvailableTransportException;
 import com.dragon.study.springboot.thrift.client.exception.ThriftClientException;
@@ -26,9 +27,9 @@ import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
@@ -55,7 +56,7 @@ import mousio.etcd4j.EtcdClient;
 @Component
 @Configuration
 @ConditionalOnClass(ThriftClient.class)
-@AutoConfigureAfter({ThriftClientConfiguration.class})
+@Import({ThriftClientConfiguration.class, EtcdAutoConfiguration.class})
 @Slf4j
 public class ThriftClientBeanPostProcessor implements BeanPostProcessor {
 

@@ -12,8 +12,6 @@ import org.apache.thrift.server.TServer;
 import org.apache.thrift.transport.TNonblockingServerSocket;
 import org.apache.thrift.transport.TNonblockingServerTransport;
 import org.apache.thrift.transport.TTransportException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -58,7 +56,7 @@ public class ThriftAutoConfiguration implements ApplicationContextAware {
     try {
       int port = thriftServerProperties.getPort();
       if (port <= 0 || port >= 65535) {
-        log.error("thrift server port error");
+        log.error("thrift server port error, port is {}", port);
         return null;
       }
       nonblockingServerTransport = new TNonblockingServerSocket(port);
@@ -111,6 +109,7 @@ public class ThriftAutoConfiguration implements ApplicationContextAware {
       }
 
       if (ifaceClass == null) {
+        log.error("iface class is null");
         throw new IllegalStateException("No Thrift Ifaces found on handler");
       }
 
@@ -179,11 +178,13 @@ public class ThriftAutoConfiguration implements ApplicationContextAware {
   public TServer thriftServer() {
     String[] beanNames = applicationContext.getBeanNamesForAnnotation(ThriftService.class);
     if (beanNames == null || beanNames.length == 0) {
+      log.error("bean name is null or empty");
       throw new ThriftServerException("no thrift service");
     }
 
     THsHaServer.Args args = thriftHsHaServerArgs();
     if (args == null) {
+      log.error("args is null");
       throw new ThriftServerException("args is null");
     }
 

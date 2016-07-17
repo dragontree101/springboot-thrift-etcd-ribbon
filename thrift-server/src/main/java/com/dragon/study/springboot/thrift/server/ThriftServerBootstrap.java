@@ -3,8 +3,6 @@ package com.dragon.study.springboot.thrift.server;
 import com.dragon.study.springboot.thrift.server.config.ThriftRegisterConfiguration;
 
 import org.apache.thrift.server.TServer;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;

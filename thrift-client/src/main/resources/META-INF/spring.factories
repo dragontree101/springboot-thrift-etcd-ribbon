@@ -1,3 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.dragon.study.springboot.thrift.client.ThriftClientBeanPostProcessor,\
-com.dragon.study.springboot.thrift.client.ThriftClientConfiguration
+com.dragon.study.springboot.thrift.client.ThriftClientBeanPostProcessor
