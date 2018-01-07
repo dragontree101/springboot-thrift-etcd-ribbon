@@ -1,6 +1,0 @@
-thrift:
-  server:
-    port: 9090
-
-etcd.uris:
-  - http://127.0.0.1:2379

@@ -1,20 +1,17 @@
 package com.dragon.study.springboot.example.server.service;
 
 
+import com.dragon.study.springboot.autoconfigure.thrift.server.ThriftService;
 import com.dragon.study.springboot.example.api.Calculator;
 import com.dragon.study.springboot.example.api.InvalidOperation;
 import com.dragon.study.springboot.example.api.SharedStruct;
 import com.dragon.study.springboot.example.api.Work;
-import com.dragon.study.springboot.thrift.server.annotation.ThriftService;
 
 import org.springframework.stereotype.Component;
 
 import java.util.HashMap;
 import java.util.Map;
 
-/**
- * Created by dragon on 16/3/3.
- */
 @Component
 @ThriftService
 public class CalculatorImpl implements Calculator.Iface {

@@ -1,0 +1,1 @@
+provides: etcd4j, libthrift

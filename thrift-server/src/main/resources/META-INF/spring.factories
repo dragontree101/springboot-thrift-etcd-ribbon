@@ -1,5 +1,0 @@
-org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-com.dragon.study.springboot.thrift.server.ThriftServerBootstrap,\
-com.dragon.study.springboot.thrift.server.config.ThriftRegisterConfiguration,\
-com.dragon.study.springboot.thrift.server.config.ThriftAutoConfiguration
-

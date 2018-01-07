@@ -1,0 +1,6 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+com.dragon.study.springboot.autoconfigure.etcd.EtcdAutoConfiguration,\
+com.dragon.study.springboot.autoconfigure.etcd.EtcdRegisterConfiguration,\
+com.dragon.study.springboot.autoconfigure.thrift.server.ThriftAutoConfiguration,\
+com.dragon.study.springboot.autoconfigure.thrift.server.ThriftRegisterConfiguration,\
+com.dragon.study.springboot.autoconfigure.thrift.server.ThriftServerBootstrap

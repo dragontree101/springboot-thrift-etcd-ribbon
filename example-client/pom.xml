@@ -12,7 +12,6 @@
     <artifactId>example-client</artifactId>
 
 
-
     <dependencies>
         <dependency>
             <groupId>org.springframework.boot</groupId>
