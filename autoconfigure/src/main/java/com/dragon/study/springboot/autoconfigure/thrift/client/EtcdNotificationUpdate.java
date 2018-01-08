@@ -1,11 +1,9 @@
-package com.dragon.study.springboot.thrift.client;
+package com.dragon.study.springboot.autoconfigure.thrift.client;
 
 
+import com.dragon.study.springboot.autoconfigure.etcd.EtcdListener;
 import com.google.common.util.concurrent.ThreadFactoryBuilder;
-
-import com.dragon.study.springboot.etcd.watcher.EtcdListener;
 import com.netflix.loadbalancer.ServerListUpdater;
-
 import java.io.IOException;
 import java.util.Date;
 import java.util.concurrent.ExecutorService;
@@ -13,13 +11,10 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadPoolExecutor;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicLong;
-
 import mousio.etcd4j.EtcdClient;
 import mousio.etcd4j.promises.EtcdResponsePromise;
 
-/**
- * Created by dragon on 16/6/7.
- */
+
 public class EtcdNotificationUpdate implements ServerListUpdater {
 
   private static class LazyHolder {

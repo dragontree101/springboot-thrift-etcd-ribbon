@@ -1,7 +1,6 @@
-package com.dragon.study.springboot.thrift.client;
+package com.dragon.study.springboot.autoconfigure.thrift.client;
 
 
-import com.dragon.study.springboot.thrift.client.route.Node;
 import com.netflix.client.config.IClientConfig;
 import com.netflix.loadbalancer.AbstractServerList;
 
@@ -14,9 +13,7 @@ import lombok.extern.slf4j.Slf4j;
 import mousio.etcd4j.EtcdClient;
 import mousio.etcd4j.responses.EtcdKeysResponse;
 
-/**
- * Created by dragon on 16/6/8.
- */
+
 @Slf4j
 public class ThriftServerList extends AbstractServerList<ThriftServer> {
 
@@ -63,11 +60,14 @@ public class ThriftServerList extends AbstractServerList<ThriftServer> {
         String appName = extractAppName(nodePath);
         Node thriftNodeAddress = addressToNode(nodePath);
 
-        ThriftServer server = new ThriftServer(appName, thriftNodeAddress.getIp(), thriftNodeAddress.getPort());
+        ThriftServer server = new ThriftServer(appName, thriftNodeAddress.getIp(),
+            thriftNodeAddress.getPort());
         servers.add(server);
       }
-      log.info("service id " + serviceId + " url is [" + servers.stream().map(s -> s.getHostPort()).collect(
-          Collectors.joining(", "))+ "]");
+      log.info(
+          "service id " + serviceId + " url is [" + servers.stream().map(ThriftServer::getHostPort)
+              .collect(
+                  Collectors.joining(", ")) + "]");
       return servers;
     } catch (Exception e) {
       log.error(e.getMessage(), e);

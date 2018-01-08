@@ -1,12 +1,10 @@
-package com.dragon.study.springboot.thrift.client.config;
+package com.dragon.study.springboot.autoconfigure.thrift.client;
 
 import org.springframework.boot.context.properties.ConfigurationProperties;
 
 import lombok.Data;
 
-/**
- * Created by Reilost on 15/11/27.
- */
+
 @Data
 @ConfigurationProperties(prefix = "thrift.client")
 public class ThriftClientProperties {

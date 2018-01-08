@@ -1,15 +1,19 @@
-package com.dragon.study.springboot.thrift.client;
+package com.dragon.study.springboot.autoconfigure.thrift.client;
 
-
-import com.dragon.study.springboot.etcd.EtcdAutoConfiguration;
-import com.dragon.study.springboot.thrift.client.annotation.ThriftClient;
-import com.dragon.study.springboot.thrift.client.exception.NoAvailableTransportException;
-import com.dragon.study.springboot.thrift.client.exception.ThriftClientException;
-import com.dragon.study.springboot.thrift.client.route.DirectAlgorithm;
-import com.dragon.study.springboot.thrift.client.route.Node;
-import com.dragon.study.springboot.thrift.client.route.RibbonAlgorithm;
-import com.dragon.study.springboot.thrift.client.route.RouterAlgorithm;
-
+import com.dragon.study.springboot.autoconfigure.etcd.EtcdAutoConfiguration;
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.lang.reflect.Parameter;
+import java.lang.reflect.UndeclaredThrowableException;
+import java.net.SocketException;
+import java.net.SocketTimeoutException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+import javax.annotation.PreDestroy;
+import lombok.extern.slf4j.Slf4j;
+import mousio.etcd4j.EtcdClient;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.pool2.impl.GenericKeyedObjectPool;
@@ -25,38 +29,21 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.BeansException;
 import org.springframework.beans.InvalidPropertyException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.beans.factory.config.BeanPostProcessor;
 import org.springframework.beans.factory.support.DefaultListableBeanFactory;
+import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Import;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Component;
 import org.springframework.util.ReflectionUtils;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.lang.reflect.Parameter;
-import java.lang.reflect.UndeclaredThrowableException;
-import java.net.SocketException;
-import java.net.SocketTimeoutException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
-import javax.annotation.PreDestroy;
-
-import lombok.extern.slf4j.Slf4j;
-import mousio.etcd4j.EtcdClient;
-
-/**
- * Created by dragon on 16/5/31.
- */
 @Component
 @Configuration
 @ConditionalOnClass(ThriftClient.class)
-@Import({ThriftClientConfiguration.class, EtcdAutoConfiguration.class})
+@AutoConfigureAfter({ThriftClientConfiguration.class, EtcdAutoConfiguration.class})
 @Slf4j
 public class ThriftClientBeanPostProcessor implements BeanPostProcessor {
 
@@ -72,6 +59,9 @@ public class ThriftClientBeanPostProcessor implements BeanPostProcessor {
 
   @Autowired
   private EtcdClient etcdClient;
+
+  @Value("${thrift.client.prefixPath}")
+  private String prefixPath;
 
 
   @Override
@@ -163,7 +153,7 @@ public class ThriftClientBeanPostProcessor implements BeanPostProcessor {
 
     RouterAlgorithm router;
     if (annotation.address().isEmpty()) {
-      router = new RibbonAlgorithm(className, etcdClient);
+      router = new RibbonAlgorithm(className, etcdClient, prefixPath);
     } else {
       router = new DirectAlgorithm(annotation.address());
     }
@@ -254,10 +244,8 @@ public class ThriftClientBeanPostProcessor implements BeanPostProcessor {
                   transport.close();
                 }
                 handlerException(index, thriftClientBean.getRetryTimes(), beanName, e);
-                continue;
               } else {
                 handlerException(index, thriftClientBean.getRetryTimes(), beanName, e);
-                continue;
               }
             } else if (realException instanceof SocketException) {
               pool.clear(node);// 把以前的对象池进行销毁
@@ -265,10 +253,8 @@ public class ThriftClientBeanPostProcessor implements BeanPostProcessor {
                 transport.close();
               }
               handlerException(index, thriftClientBean.getRetryTimes(), beanName, e);
-              continue;
             } else {
               handlerException(index, thriftClientBean.getRetryTimes(), beanName, e);
-              continue;
             }
             // 有可能服务端返回的结果里面存在null
           } else if (e.getUndeclaredThrowable() instanceof TApplicationException) {
@@ -285,7 +271,6 @@ public class ThriftClientBeanPostProcessor implements BeanPostProcessor {
                 ExceptionUtils.getMessage(e) + ", bean name is " + beanName, e);
           } else {
             handlerException(index, thriftClientBean.getRetryTimes(), beanName, e);
-            continue;
           }
         } finally {
           try {

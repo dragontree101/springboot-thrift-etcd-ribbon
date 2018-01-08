@@ -1,10 +1,8 @@
-package com.dragon.study.springboot.thrift.client;
+package com.dragon.study.springboot.autoconfigure.thrift.client;
 
 import com.netflix.loadbalancer.Server;
 
-/**
- * Created by dragon on 16/6/8.
- */
+
 public class ThriftServer extends Server {
 
   private final MetaInfo metaInfo;

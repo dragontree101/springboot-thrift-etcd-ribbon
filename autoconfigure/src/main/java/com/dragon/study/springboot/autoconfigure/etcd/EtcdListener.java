@@ -5,6 +5,7 @@ import java.util.concurrent.CancellationException;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import mousio.client.promises.ResponsePromise;
 import mousio.etcd4j.EtcdClient;
@@ -13,10 +14,13 @@ import mousio.etcd4j.responses.EtcdKeysResponse;
 
 @Data
 @Slf4j
-@NoArgsConstructor
-@AllArgsConstructor
 public abstract class EtcdListener
     implements ResponsePromise.IsSimplePromiseResponseHandler<EtcdKeysResponse> {
+
+  public EtcdListener(EtcdClient etcdClient, String listenPath) {
+    this.etcdClient = etcdClient;
+    this.listenPath = listenPath;
+  }
 
   private EtcdClient etcdClient;
   private String watchPath;

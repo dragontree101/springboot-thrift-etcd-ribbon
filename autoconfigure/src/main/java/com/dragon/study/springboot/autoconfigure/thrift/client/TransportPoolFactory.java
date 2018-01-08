@@ -1,8 +1,5 @@
-package com.dragon.study.springboot.thrift.client.pool;
+package com.dragon.study.springboot.autoconfigure.thrift.client;
 
-
-import com.dragon.study.springboot.thrift.client.exception.ThriftClientException;
-import com.dragon.study.springboot.thrift.client.route.Node;
 
 import org.apache.commons.lang3.exception.ExceptionUtils;
 import org.apache.commons.pool2.BaseKeyedPooledObjectFactory;
@@ -36,11 +33,7 @@ public class TransportPoolFactory extends BaseKeyedPooledObjectFactory<Node, TTr
   public boolean validateObject(Node key, PooledObject<TTransport> value) {
     try {
       TTransport transport = value.getObject();
-      if (transport.isOpen()) {
-        return true;
-      } else {
-        return false;
-      }
+      return transport.isOpen();
     } catch (Exception e) {
       return false;
     }
@@ -53,7 +46,7 @@ public class TransportPoolFactory extends BaseKeyedPooledObjectFactory<Node, TTr
     String address = key.getIp() + ":" + key.getPort();
     try {
       if (forbidMap.containsKey(address)) {
-        if (System.currentTimeMillis() - forbidMap.get(address).longValue() < FORBID_TIME) {
+        if (System.currentTimeMillis() - forbidMap.get(address) < FORBID_TIME) {
           throw new ThriftClientException(
               FORBID_TIME + " ms forbid to connect the node :" + address);
         } else {

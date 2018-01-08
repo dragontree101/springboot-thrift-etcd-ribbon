@@ -3,4 +3,6 @@ com.dragon.study.springboot.autoconfigure.etcd.EtcdAutoConfiguration,\
 com.dragon.study.springboot.autoconfigure.etcd.EtcdRegisterConfiguration,\
 com.dragon.study.springboot.autoconfigure.thrift.server.ThriftAutoConfiguration,\
 com.dragon.study.springboot.autoconfigure.thrift.server.ThriftRegisterConfiguration,\
-com.dragon.study.springboot.autoconfigure.thrift.server.ThriftServerBootstrap
+com.dragon.study.springboot.autoconfigure.thrift.server.ThriftServerBootstrap,\
+com.dragon.study.springboot.autoconfigure.thrift.client.ThriftClientConfiguration,\
+com.dragon.study.springboot.autoconfigure.thrift.client.ThriftClientBeanPostProcessor

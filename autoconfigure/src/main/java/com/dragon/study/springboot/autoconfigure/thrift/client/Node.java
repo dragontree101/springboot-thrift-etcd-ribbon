@@ -1,12 +1,10 @@
-package com.dragon.study.springboot.thrift.client.route;
+package com.dragon.study.springboot.autoconfigure.thrift.client;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
-/**
- * Created by dragon on 16/5/6.
- */
+
 @Data
 @EqualsAndHashCode(exclude = {"timeout"})
 @ToString

@@ -1,9 +1,6 @@
-package com.dragon.study.springboot.thrift.client.route;
+package com.dragon.study.springboot.autoconfigure.thrift.client;
 
 
-import com.dragon.study.springboot.thrift.client.EtcdNotificationUpdate;
-import com.dragon.study.springboot.thrift.client.ThriftServer;
-import com.dragon.study.springboot.thrift.client.ThriftServerList;
 import com.netflix.client.config.CommonClientConfigKey;
 import com.netflix.client.config.DefaultClientConfigImpl;
 import com.netflix.loadbalancer.AvailabilityFilteringRule;
@@ -14,20 +11,21 @@ import com.netflix.loadbalancer.ZoneAffinityServerListFilter;
 
 import mousio.etcd4j.EtcdClient;
 
-/**
- * Created by dragon on 16/5/6.
- */
+
 public class RibbonAlgorithm implements RouterAlgorithm {
 
   private final String className;
 
   private final EtcdClient etcdClient;
 
+  private final String prefixPath;
+
   private DynamicServerListLoadBalancer<ThriftServer> loadBalancer;
 
-  public RibbonAlgorithm(String className, EtcdClient etcdClient) {
+  public RibbonAlgorithm(String className, EtcdClient etcdClient, String prefixPath) {
     this.className = className;
     this.etcdClient = etcdClient;
+    this.prefixPath = prefixPath;
     init();
   }
 
@@ -37,7 +35,7 @@ public class RibbonAlgorithm implements RouterAlgorithm {
     config.setProperty(CommonClientConfigKey.ServerListUpdaterClassName,
         EtcdNotificationUpdate.class.getName());
 
-    String path = "/dragon/service/" + className;
+    String path = prefixPath + className;
     loadBalancer = new DynamicServerListLoadBalancer<>(config, new AvailabilityFilteringRule(),
         new DummyPing(), new ThriftServerList(etcdClient, className),
         new ZoneAffinityServerListFilter<>(),

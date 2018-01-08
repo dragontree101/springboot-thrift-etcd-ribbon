@@ -1,4 +1,4 @@
-package com.dragon.study.springboot.thrift.client.annotation;
+package com.dragon.study.springboot.autoconfigure.thrift.client;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;
@@ -7,9 +7,7 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-/**
- * Created by dragon on 16/5/31.
- */
+
 @Target({ElementType.FIELD, ElementType.METHOD})
 @Retention(RetentionPolicy.RUNTIME)
 @Documented

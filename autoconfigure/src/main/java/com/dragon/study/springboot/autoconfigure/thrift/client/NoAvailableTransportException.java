@@ -1,8 +1,6 @@
-package com.dragon.study.springboot.thrift.client.exception;
+package com.dragon.study.springboot.autoconfigure.thrift.client;
 
-/**
- * Created by dragon on 16/5/27.
- */
+
 public class NoAvailableTransportException extends Exception {
 
   public NoAvailableTransportException(String message, String className) {

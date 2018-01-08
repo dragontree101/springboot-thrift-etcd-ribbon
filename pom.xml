@@ -13,7 +13,7 @@
     <module>autoconfigure</module>
     <module>etcd-thrift-starter</module>
     <module>example-server</module>
-    <!--<module>example-client</module>-->
+    <module>example-client</module>
     <module>example-api</module>
   </modules>
 
@@ -38,6 +38,28 @@
         <groupId>org.mousio</groupId>
         <artifactId>etcd4j</artifactId>
         <version>2.14.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.netflix.ribbon</groupId>
+        <artifactId>ribbon</artifactId>
+        <version>2.2.0</version>
+      </dependency>
+      <dependency>
+        <groupId>com.netflix.ribbon</groupId>
+        <artifactId>ribbon-core</artifactId>
+        <version>2.2.0</version>
+      </dependency>
+
+      <dependency>
+        <groupId>com.netflix.ribbon</groupId>
+        <artifactId>ribbon-loadbalancer</artifactId>
+        <version>2.2.0</version>
+      </dependency>
+      <dependency>
+        <groupId>com.netflix.ribbon</groupId>
+        <artifactId>ribbon-transport</artifactId>
+        <version>2.2.0</version>
       </dependency>
     </dependencies>
   </dependencyManagement>

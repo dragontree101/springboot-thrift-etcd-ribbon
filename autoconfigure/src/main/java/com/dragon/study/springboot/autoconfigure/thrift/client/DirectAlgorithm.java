@@ -1,5 +1,6 @@
-package com.dragon.study.springboot.thrift.client.route;
+package com.dragon.study.springboot.autoconfigure.thrift.client;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -19,17 +20,15 @@ public class DirectAlgorithm implements RouterAlgorithm {
 
   @Override
   public void init() {
-    String addressList[] = directAddress.split(",");
-    int length = addressList.length;
-    for (int i = 0; i < length; i++) {
-      String address[] = addressList[i].split(":");
-      String ip = address[0];
-      int port = new Integer(address[1]).intValue();
+    Arrays.stream(directAddress.split(",")).forEach(address -> {
+      String parts[] = address.split(":");
+      String ip = parts[0];
+      int port = Integer.valueOf(parts[1]);
       Node node = new Node();
       node.setPort(port);
       node.setIp(ip);
       nodeList.add(node);
-    }
+    });
   }
 
   @Override
