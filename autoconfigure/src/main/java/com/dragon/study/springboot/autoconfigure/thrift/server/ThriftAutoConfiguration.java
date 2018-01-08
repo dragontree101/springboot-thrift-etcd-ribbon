@@ -147,7 +147,7 @@ public class ThriftAutoConfiguration implements ApplicationContextAware {
   @ConditionalOnExpression("#{environment.containsProperty('thrift.server.port')}")
   public TServer thriftServer() {
     String[] beanNames = applicationContext.getBeanNamesForAnnotation(ThriftService.class);
-    Assert.isTrue(beanNames != null && beanNames.length == 0, "bean name is null or empty");
+    Assert.isTrue(beanNames != null && beanNames.length != 0, "bean name is null or empty");
     THsHaServer.Args args = thriftHsHaServerArgs();
     Assert.notNull(args, "args must not null");
 
